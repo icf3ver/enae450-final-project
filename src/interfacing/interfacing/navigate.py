@@ -21,26 +21,26 @@ class movement(Node):
         self.i = 0
         self.stop = 0
 
+        self.act_dist = 0.25
+
     def navigate(self,msg):
+        self.get_logger().info('Turning')
+        x = len(msg.ranges) // 8
+    
         if self.stop == 1:
-            x = len(msg.ranges)//6
+            # Left
             for j in range(x):
-                i = j + x
-                if (msg.ranges[i] > 1) and (msg.ranges[i] < msg.range_max):
-                    while(self.stop == 1):
-                        self.turnL
-                    self.turnL
-                    break
+                i = j + 2*x
+                if (msg.ranges[i] < self.act_dist) and (msg.ranges[i] > msg.range_min):
+                    self.turnR()
+                    return
+            
+            # Right
             for j in range(x):
-                i = j + 4*x
-                if (msg.ranges[i] > 1) and (msg.ranges[i] < msg.range_max):
-                    while(self.stop == 1):
-                        self.turnR
-                    self.turnR
-                    break
-            while(self.stop == 1):
-                self.turnL
-            self.turnL
+                i = j + 5*x
+                if (msg.ranges[i] < self.act_dist) and (msg.ranges[i] > msg.range_min):
+                    self.turnL()
+                    return
 
 
        
@@ -48,11 +48,13 @@ class movement(Node):
         x = len(msg.ranges)//8
         for j in range(2*x):
             i = j + 3*x
-            if (msg.ranges[i] < .5) and (msg.ranges[i] > msg.range_min):
+            if (msg.ranges[i] < self.act_dist) and (msg.ranges[i] > msg.range_min):
                 self.stop = 1
                 break
             else:
                 self.stop = 0
+
+        self.navigate(msg)
       
                 
     def set_velocity(self):
@@ -71,16 +73,21 @@ class movement(Node):
     def turnL(self):
         msg = Twist()
         if self.stop == 1:
-            msg.angular.z = -.1
+            msg.angular.z = -.3
         else:
-            msg.angular.z = 0
+            msg.angular.z = .0
+        
+        self.forward_velocity_.publish(msg)
 
     def turnR(self):
         msg = Twist()
         if self.stop == 1:
-            msg.angular.z = .1
+            msg.angular.z = .3
         else:
-            msg.angular.z = 0
+            msg.angular.z = .0
+
+        self.forward_velocity_.publish(msg)
+        
 
 
 def main(args=None):
