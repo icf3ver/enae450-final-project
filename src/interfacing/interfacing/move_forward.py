@@ -8,15 +8,19 @@ from sensor_msgs.msg import LaserScan
 
 import numpy
 
-class movement(Node):
+class RobotController(Node):
+    """
+        Robot Controller
+        "Fooorward ..."
+    """
     def __init__(self):
-        super().__init__("number_publisher")
-        #create node class
-       
-        self.Lidardis = self.create_subscription(LaserScan, "scan", self.obstacle, 10)
+        super().__init__("move_forward_publisher")
+
+        # self.Lidardis = self.create_subscription(LaserScan, "scan", self.obstacle, 10)
        
         self.forward_velocity_ = self.create_publisher(Twist, "cmd_vel", 10)
         self.timer = self.create_timer(0.5, self.set_velocity)
+
         # create publisher under type Twist
         self.i = 0
         self.stop = 0
@@ -37,20 +41,22 @@ class movement(Node):
            msg.linear.x = .1
         else:
            msg.linear.x = .0
-        # set linear velocity
+        
+        # Publish linear velocity
         self.forward_velocity_.publish(msg)
-        #publish message
+    
+        # Log publish
         self.get_logger().info('Publishing: "%d"' % msg.linear.x)
         self.i += 1
-        #log publish
+        
 
 def main(args=None):
     rclpy.init(args=args)
-    node = movement()
-    # make node
+    
+    node = RobotController()
+
     rclpy.spin(node)
     rclpy.shutdown()
-    # shutdown node
 
 
 if __name__ == '__main__':

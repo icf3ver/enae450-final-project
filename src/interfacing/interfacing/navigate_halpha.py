@@ -33,7 +33,16 @@ from sensor_msgs.msg import LaserScan
 
 import numpy as np 
 
-class movement(Node):
+class RobotController(Node):
+    """
+        Robot Movement Controller
+        
+        Tuning Parameters
+         1. Commitment Clocks
+         2. Drift Speed         (Efficiency)
+         3. Turn Speed          (Winning)
+         3. Movement Speed      (Winning)
+    """
     def __init__(self):
         super().__init__("number_publisher")
 
@@ -253,7 +262,7 @@ class movement(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = movement()
+    node = RobotController()
     rclpy.spin(node)
     rclpy.shutdown()
 
